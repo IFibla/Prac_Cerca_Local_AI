@@ -8,6 +8,6 @@
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="library" name="AIMA" level="project" />
-    <orderEntry type="library" name="swtgraphics2d" level="project" />
+    <orderEntry type="library" name="Desastres" level="project" />
   </component>
 </module>
