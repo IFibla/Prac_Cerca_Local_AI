@@ -1,0 +1,11 @@
+Disponemos de un tablero de 50 x 50, o en otras palabras de un tablero de 2500 casillas. En el terreno representado por el tablero ha ocurrido un desastre natural. Existen C centros de rescate, los cuales se encuentran en los límites del tablero. De estos centros saldrán los helicópteros, con el objetivo de rescatar a grupos de personas.
+\\ \\
+Todos los grupos, los cuales son indivisibles, están formados por un mínimo de una persona y un máximo de doce. Además, dependiendo de si existe algún herido en este grupo, se le asignará una entero, el cual denota la prioridad. En el caso que haya uno, o más, heridos, el grupo tendrá prioridad uno y el tiempo que tardara el helicóptero en recogerlo será proporcional al número de personas, más concretamente dos minutos por cada integrante. Sin embargo, si no hay ningún herido en el grupo de personas, se le asignará prioridad dos, y el tiempo que tardara el helicóptero en recogerlo será de un minuto por cada persona.
+\\ \\
+Los helicópteros tienen una capacidad máxima de 15 personas, pero pueden no llegar a esta capacidad en uno de sus viajes. La velocidad máxima a la que viajaran es de $100 \frac{km}{h}$. Cuando regresan al centro de control, el helicóptero tendrá que esperar 10 minutos en poder volver a hacer un rescate.
+\\ \\ 
+El cálculo de la distancia recorrida entre dos grupos se realiza mediante la distancia euclídea entre sus coordenadas.\begin{figure}[h]
+    \label{Distancia euclídea:1}
+    \[ d(P, Q)=\sqrt{(p_1-q_1)^2+(p_2-q_2)^2+...+(p_n-q_n)^2}=\sqrt{\sum_{i=1}^{n}(p_i-q_i)^2} \]
+    \caption{Distancia euclídea}
+\end{figure}
