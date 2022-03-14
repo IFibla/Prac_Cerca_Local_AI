@@ -1,0 +1,20 @@
+Index: Prac_Cerca_Local_AI.iml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+><?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<module type=\"JAVA_MODULE\" version=\"4\">\n  <component name=\"NewModuleRootManager\" inherit-compiler-output=\"true\">\n    <exclude-output />\n    <content url=\"file://$MODULE_DIR$\">\n      <sourceFolder url=\"file://$MODULE_DIR$/src\" isTestSource=\"false\" />\n    </content>\n    <orderEntry type=\"inheritedJdk\" />\n    <orderEntry type=\"sourceFolder\" forTests=\"false\" />\n    <orderEntry type=\"library\" name=\"AIMA\" level=\"project\" />\n    <orderEntry type=\"library\" name=\"swtgraphics2d\" level=\"project\" />\n  </component>\n</module>
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/Prac_Cerca_Local_AI.iml b/Prac_Cerca_Local_AI.iml
+--- a/Prac_Cerca_Local_AI.iml	(revision 548a8b3e293c9d2444712bdeb8f9c2d1f53c4347)
++++ b/Prac_Cerca_Local_AI.iml	(date 1647121377691)
+@@ -8,6 +8,8 @@
+     <orderEntry type="inheritedJdk" />
+     <orderEntry type="sourceFolder" forTests="false" />
+     <orderEntry type="library" name="AIMA" level="project" />
++    <orderEntry type="library" name="Desastres" level="project" />
++    <orderEntry type="library" name="lib" level="project" />
+     <orderEntry type="library" name="swtgraphics2d" level="project" />
+   </component>
+ </module>
+\ No newline at end of file
