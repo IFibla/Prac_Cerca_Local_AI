@@ -1,7 +1,5 @@
 import IA.Desastres.*;
 
-import java.util.ArrayList;
-
 /**
  * Operadors:
  */
@@ -12,10 +10,10 @@ public class Main {
         
         int ncentros = 5;
         int helicopteros = 10;
-        int ngrupos = 230; 
-        int seed = 12342412;
+        int ngrupos = 200; 
+        int seed = 1;
 
         Representacio r = new Representacio(ncentros, helicopteros, ngrupos, seed);
-
+        r.possibleEstatInicial();
     }
 }

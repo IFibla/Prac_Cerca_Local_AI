@@ -5,12 +5,10 @@
 
 package IA.Desastres;
 
-import java.io.Serial;
 import java.util.ArrayList;
 import java.util.Random;
 
 public class Centros extends ArrayList<Centro> {
-    @Serial
     private static final long serialVersionUID = 1L;
     private Random myRandom;
 
