@@ -28,5 +28,5 @@ hs_err_pid*
 .lot
 .synctex.gz
 
-.idea
+.idea/*
 .iml
