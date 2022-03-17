@@ -37,6 +37,9 @@ public class Representacio {
 
         for ( int i = 0; i < g.size(); ++i ) {
             Grupo grupo = (Grupo)g.get(i);
+            
+            System.out.println("At instant " + time + " we are going to pick up a group of " + grupo.getNPersonas() + " people of priority " + grupo.getPrioridad() + " at coord " + grupo.getCoordX() + ", " + grupo.getCoordY());
+
             double distance = getDistance(start.getCoordX(), start.getCoordY(), grupo.getCoordX(), grupo.getCoordY());
             double tripTime = (1.0f/3.6f) * distance;
             double pickUpTime = 0;
