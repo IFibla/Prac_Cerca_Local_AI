@@ -16,7 +16,9 @@ public class Main {
         Grupos g = new Grupos(ngrupos, seed);
         Centros c = new Centros(ncentros, helicopteros, seed);
 
-        Estado e = new Estado(g, c, helicopteros, seed);
+        Estado e = new Estado(g, c, helicopteros, 49);
         System.out.println(e);
+
+        System.out.println(e.getHeuristicCost1(g));
     }
 }

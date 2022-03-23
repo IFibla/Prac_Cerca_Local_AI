@@ -22,7 +22,7 @@ public class Estado {
         for ( int i = 0; i < c.size(); ++i ) {
             int cNumHelicopteros = ((Centro)c.get(i)).getNHelicopteros() + it;
             while ( cNumHelicopteros > it ) {
-                Nodo n = new Nodo(Nodo.CENTRO, i);
+                Nodo n = new Nodo(Nodo.CENTRO, i, ((Centro)c.get(i)).getCoordX(), ((Centro)c.get(i)).getCoordY());
                 ArrayList<Nodo> a = new ArrayList<Nodo>();
                 a.add(n);
                 Schedule.add(a);
@@ -50,7 +50,7 @@ public class Estado {
         for ( int i = 0; i < c.size(); ++i ) {
             int cNumHelicopteros = ((Centro)c.get(i)).getNHelicopteros() + it;
             while ( cNumHelicopteros > it ) {
-                Nodo n = new Nodo(Nodo.CENTRO, i, ((Centro)c.get(i)).getCoordX(), ((Centro)c.get(i)).getCoordY()));
+                Nodo n = new Nodo(Nodo.CENTRO, i, ((Centro)c.get(i)).getCoordX(), ((Centro)c.get(i)).getCoordY());
                 ArrayList<Nodo> a = new ArrayList<Nodo>();
                 a.add(n);
                 Schedule.add(a);
@@ -95,26 +95,33 @@ public class Estado {
     }
 
     private double getMovingTime ( Nodo a, Nodo b ) {
-        return Math.sqrt( Math.pow((a.getCoordX() - b.getCoordX()), 2) + Math.pow((a.getCoordY() - b.getCoordY()), 2)  )
+        return Math.sqrt( Math.pow((a.getCoordX() - b.getCoordX()), 2) + Math.pow((a.getCoordY() - b.getCoordY()), 2));
     }
 
-    private double getHeuristicCost1 ( ) {
+    public double getHeuristicCost1 ( Grupos g ) {
         double travelToGroup1 = 0.0;
         double travelToGroup2 = 0.0;
         double travelToGroup12 = 0.0;
-
         for ( int i = 0; i < Schedule.size(); ++i ) {
             int helicopterMove = 1;
             while ( helicopterMove < Schedule.get(i).size() ) {
-                double movTime = getMovingTime( ((Nodo)Schedule.get(i).get(helicopterMove-1)), ((Nodo) Schedule.get(i).get(helicopterMove)) );
+                double movTime = 0.0;
+                boolean [] checkList = new boolean [2];
+                while ( Schedule.get(i).get(helicopterMove).getType() != Nodo.CENTRO ) {
+                    int groupNum = ((Nodo) Schedule.get(i).get(helicopterMove)).getId();
+                    checkList[((Grupo)g.get(groupNum)).getPrioridad()-1] = true;
+                    movTime += getMovingTime( ((Nodo)Schedule.get(i).get(helicopterMove-1)), ((Nodo) Schedule.get(i).get(helicopterMove)) );
+                    ++helicopterMove;
+                }
+                movTime += getMovingTime( ((Nodo)Schedule.get(i).get(helicopterMove-1)), ((Nodo) Schedule.get(i).get(helicopterMove)) );
+                if ( checkList[0] && checkList[1] ) travelToGroup12 += movTime;
+                else if ( checkList[0] ) travelToGroup1 += movTime;
+                else if ( checkList[1] ) travelToGroup2 += movTime;
                 ++helicopterMove;
             }
-
         }
 
-
-        for 
-
+        return ALPHA * travelToGroup1 + BETA * travelToGroup2 + OMEGA * travelToGroup12;
     }
 
     @Override
