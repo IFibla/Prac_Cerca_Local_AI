@@ -5,7 +5,25 @@ import IA.Desastres.*;
  */
 
 public class Main {
-       
+
+    public void generarSucesores ( Estado e ) {
+        int X = e.getSizeX();
+        int Y = e.getSizeY();
+
+        for ( int i = 0; i < X; ++i ) {
+            for ( int j = 0; j < Y; ++j ) {
+
+                for ( int k = 0; k < X; ++k ) {
+                    for ( int l = 0; l < Y; ++l ) {
+
+                    }
+                } 
+
+
+            }
+        }
+    }
+
     public static void main(String[] args) {
         
         int ncentros = 10;
@@ -16,9 +34,14 @@ public class Main {
         Grupos g = new Grupos(ngrupos, seed);
         Centros c = new Centros(ncentros, helicopteros, seed);
 
-        Estado e = new Estado(g, c, helicopteros, 49);
+        Estado.c = c;
+        Estado.g = g;
+
+        Estado e = new Estado(helicopteros, 49);
         System.out.println(e);
 
-        System.out.println(e.getHeuristicCost1(g));
+        Estado e2 = new Estado(e, 0, 4);
+        System.out.println(e2);
+
     }
 }

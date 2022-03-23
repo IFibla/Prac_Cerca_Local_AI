@@ -10,11 +10,28 @@ public class Estado {
     public static final double BETA = 1; 
     public static final double OMEGA = 1; 
 
-    ArrayList < ArrayList < Nodo > > Schedule;
+    public static Grupos g;
+    public static Centros c;
+
+    private ArrayList < ArrayList < Nodo > > Schedule;
     // Es el scheduler de helicopteros, por ejemplo, sale del C1, va a buscar el grupo G2 y vuelve al centro C2.
     // Cada fila de la matriz representa un helicoptero.
 
-    public Estado ( Grupos g, Centros c, int numHelicopteros ) {
+    private double heuristic;
+
+    public Estado ( Estado e, int h, int p ) {
+        this.Schedule = e.Schedule;
+        this.deleteOperation(h, p);
+        this.calculateHeuristicCost1();
+    }
+
+    public Estado ( Estado e, int h1, int p1, int h2, int p2 ) {
+        this.Schedule = e.Schedule;
+        this.swapOperation(h1, h2, p1, p2);
+        this.calculateHeuristicCost1();
+    }
+
+    public Estado ( int numHelicopteros ) {
         
         Schedule = new ArrayList < ArrayList < Nodo > > ();
 
@@ -31,12 +48,14 @@ public class Estado {
         }
 
         for ( int i = 0; i < g.size(); i += numHelicopteros * c.size()) {
-            addGrupos(g, i);
-            addCentros(c);
+            addGrupos(i);
+            addCentros();
         }
+
+        calculateHeuristicCost1();
     }
 
-    public Estado ( Grupos g, Centros c, int numHelicopters, int seed ) {
+    public Estado ( int numHelicopters, int seed ) {
         
         Random myRandom = new Random((long)seed);
         Schedule = new ArrayList < ArrayList < Nodo > > (numHelicopters);
@@ -66,15 +85,17 @@ public class Estado {
                 Nodo n = new Nodo(Nodo.GRUPO, randNum, ((Grupo)g.get(randNum)).getCoordX(), ((Grupo)g.get(randNum)).getCoordY());;
                 Schedule.get(actualHelicopter).add(n);
                 if ( ++actualHelicopter >= ( numHelicopters * c.size() ) ) {
-                    addCentros(c);
+                    addCentros();
                     actualHelicopter = 0;
                 }
             }
         }
-        addCentros(c);
+        addCentros();
+
+        calculateHeuristicCost1();
     }
 
-    private void addCentros ( Centros c ) {
+    private void addCentros ( ) {
         int it = 0;
         for ( int i = 0; i < c.size(); ++i ) {
             int cNumHelicopteros = ((Centro)c.get(i)).getNHelicopteros() + it;
@@ -87,7 +108,7 @@ public class Estado {
         }
     } 
 
-    private void addGrupos ( Grupos g, int startIndex ) {
+    private void addGrupos ( int startIndex ) {
         for ( int i = startIndex; i < g.size() && i < startIndex + Schedule.size(); ++i ) {
             Nodo n = new Nodo(Nodo.GRUPO, i, ((Grupo)g.get(i)).getCoordX(), ((Grupo)g.get(i)).getCoordY());
             Schedule.get(i-startIndex).add(n);
@@ -98,7 +119,7 @@ public class Estado {
         return Math.sqrt( Math.pow((a.getCoordX() - b.getCoordX()), 2) + Math.pow((a.getCoordY() - b.getCoordY()), 2));
     }
 
-    public double getHeuristicCost1 ( Grupos g ) {
+    private void calculateHeuristicCost1 ( ) {
         double travelToGroup1 = 0.0;
         double travelToGroup2 = 0.0;
         double travelToGroup12 = 0.0;
@@ -121,7 +142,7 @@ public class Estado {
             }
         }
 
-        return ALPHA * travelToGroup1 + BETA * travelToGroup2 + OMEGA * travelToGroup12;
+        this.heuristic = ALPHA * travelToGroup1 + BETA * travelToGroup2 + OMEGA * travelToGroup12;
     }
 
     @Override
@@ -133,5 +154,28 @@ public class Estado {
             result = result.concat("\n");
         } 
         return result;
+    }
+
+    public void swapOperation ( int h1, int h2, int p1, int p2 ) {
+        Nodo aux = Schedule.get(h1).get(p1);
+        Schedule.get(h1).set(p1, Schedule.get(h2).get(p2));
+        Schedule.get(h2).set(p2, aux);
+    }
+
+    public void deleteOperation ( int h, int p ) {
+        if ( Schedule.get(h).get(p).getType() == Nodo.CENTRO && p != 0 && p != Schedule.get(h).size() )
+            Schedule.get(h).remove(p);
+    }
+
+    public double getHeuristicValue () {
+        return this.heuristic;
+    }
+
+    public int getSizeX () {
+        return Schedule.size();
+    }
+    
+    public int getSizeY () {
+        return Schedule.get(0).size();
     }
 }
