@@ -2,15 +2,18 @@ package IA.Desastres;
 
 public class Nodo {
     
-    private static final boolean CENTRO = false;
-    private static final boolean GRUPO = true;
+    public static final boolean CENTRO = false;
+    public static final boolean GRUPO = true;
 
     private boolean type;
     private int id;
+    private int coordX, coordY;
 
-    public Nodo ( boolean type, int id ) {
+    public Nodo ( boolean type, int id, int coordX, int coordY ) {
         this.type = type;
         this.id = id;
+        this.coordX = coordX;
+        this.coordY = coordY;
     }
 
     public boolean getType () {
@@ -19,6 +22,14 @@ public class Nodo {
     
     public int getId () {
         return this.id;
+    }
+
+    public int getCoordX () {
+        return this.coordX;
+    }
+    
+    public int getCoordY () {
+        return this.coordY;
     }
 
     @Override
@@ -32,7 +43,8 @@ public class Nodo {
 
     @Override
     public String toString () {
-        return "(" + type + id + ")";
+        if ( type ) return "(G" + id + ")";
+        else return "(C" + id + ")";
     }
 
 }

@@ -8,12 +8,15 @@ public class Main {
        
     public static void main(String[] args) {
         
-        int ncentros = 5;
-        int helicopteros = 10;
-        int ngrupos = 200; 
+        int ncentros = 10;
+        int helicopteros = 1;
+        int ngrupos = 100; 
         int seed = 1;
 
-        Representacio r = new Representacio(ncentros, helicopteros, ngrupos, seed);
-        r.possibleEstatInicial();
+        Grupos g = new Grupos(ngrupos, seed);
+        Centros c = new Centros(ncentros, helicopteros, seed);
+
+        Estado e = new Estado(g, c, helicopteros, seed);
+        System.out.println(e);
     }
 }
