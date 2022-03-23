@@ -1,0 +1,21 @@
+En el mundo de la informatica, entendemos por función heuristica aquella función capaz de classificar las alternativas en algoritmos de busqueda en cada paso de ramificación, en función de la información disponible para decidir el camino a seguir. 
+\\ \\
+En esta practica estamos tratando de resolver un problema de busqueda, más concretamente una busqueda local. ( Explicar por encima la necesidad de usar una heuristica ).
+\\ \\
+Como se ha mencionado anteriormente, se hace uso de una matriz para guardar el estado, más concretamente se usa un ArrayList de ArrayList de Nodos. Por lo tanto, de una forma senzilla podemos obtener la distancia que recorre un helicoptero y los viages que hacen a los diferentes centros de control.
+\\ \\
+De primeras se penso en unicamente evaluar, mediante el heuristico, los viages que hacia todos los helicopteros hacia un centro de control, o en otras palabras, solo se tenian en cuenta el siguiente tipo de eventos Gx -> Cy -> Gz, donde G representa grupo, C centro y x,y e z representa el indicie en el conjunto de grupos y centros, respectivamente. Esta primera aproximación del heuristico se podia calcular mediante la siguente formula:
+\begin{figure}[h]
+    \label{FuncionHeuristica:1}
+    \[ h(n) = \sum_{h=0}^{|H|} V_{org: CC} + V_{dst: CC} \]
+    \caption{Función heurística. Primera aproximación}
+\end{figure}
+\\ \\
+Rapidamente te das cuenta que esta función heuristica no era correcta, ( #!TO-DO!# ESCRIBIR MOTIVOS ). Por lo tanto se opto por una idea un poco mas compleja, pero que partia de esta primera formalización.
+\\ \\ 
+En este caso, el heuristico sigue teniendo en cuenta los viajes que tienen como origen u destino un centro de control, pero no nos retornan el valor completo de este. Estos viajes tienen un factor de ponderación, cuyo valor no va a permitir hacer diferentes experimentos. Ademas, le añadimos los viajes que hace entre grupos, con un factor de ponderación para tener mas possibilidades. Esto nos lleva a la siguiente formula:
+\begin{figure}[h]
+    \label{FuncionHeuristica:2}
+    \[ h(n) = \sum_{h=0}^{|H|} \alpha \cdot V_{org: CC} + \beta \cdot V_{dst: CC} + \gamma \cdot V_{org: !CC && dst: !CC}\]
+    \caption{Función heurística. Segunda aproximación}
+\end{figure}
