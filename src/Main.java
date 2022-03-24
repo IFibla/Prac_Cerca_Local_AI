@@ -15,7 +15,9 @@ public class Main {
 
                 for ( int k = 0; k < X; ++k ) {
                     for ( int l = 0; l < Y; ++l ) {
-
+                        Estado new_e = new Estado ( e, i, j, k, l );
+                        if ( new_e != e ) 
+                            // Add new_e to priority_queue with pair ( heuristic, new_e ) 
                     }
                 } 
 
