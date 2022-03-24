@@ -13,20 +13,34 @@ public class Estado {
     public static Grupos g;
     public static Centros c;
 
-    private ArrayList < ArrayList < Nodo > > Schedule;
+    public ArrayList < ArrayList < Nodo > > Schedule;
     // Es el scheduler de helicopteros, por ejemplo, sale del C1, va a buscar el grupo G2 y vuelve al centro C2.
     // Cada fila de la matriz representa un helicoptero.
 
     private double heuristic;
 
     public Estado ( Estado e, int h, int p ) {
-        this.Schedule = e.Schedule;
+        Schedule = new ArrayList<ArrayList<Nodo>>();
+        for ( int i = 0; i < e.Schedule.size(); ++i ) {
+            ArrayList < Nodo > aux = new ArrayList<Nodo>();
+            for ( int j = 0; j < e.Schedule.get(i).size(); ++j ) {
+                aux.add(e.Schedule.get(i).get(j));
+            }
+            this.Schedule.add(aux);
+        }
         this.deleteOperation(h, p);
         this.calculateHeuristicCost1();
     }
 
     public Estado ( Estado e, int h1, int p1, int h2, int p2 ) {
-        this.Schedule = e.Schedule;
+        Schedule = new ArrayList<ArrayList<Nodo>>();
+        for ( int i = 0; i < e.Schedule.size(); ++i ) {
+            ArrayList < Nodo > aux = new ArrayList<Nodo>();
+            for ( int j = 0; j < e.Schedule.get(i).size(); ++j ) {
+                aux.add(e.Schedule.get(i).get(j));
+            }
+            this.Schedule.add(aux);
+        }
         this.swapOperation(h1, h2, p1, p2);
         this.calculateHeuristicCost1();
     }
@@ -128,10 +142,12 @@ public class Estado {
             while ( helicopterMove < Schedule.get(i).size() ) {
                 double movTime = 0.0;
                 boolean [] checkList = new boolean [2];
+                
                 while ( Schedule.get(i).get(helicopterMove).getType() != Nodo.CENTRO ) {
                     int groupNum = ((Nodo) Schedule.get(i).get(helicopterMove)).getId();
                     checkList[((Grupo)g.get(groupNum)).getPrioridad()-1] = true;
                     movTime += getMovingTime( ((Nodo)Schedule.get(i).get(helicopterMove-1)), ((Nodo) Schedule.get(i).get(helicopterMove)) );
+                    if ( helicopterMove + 1 >=  Schedule.get(i).size() ) break;
                     ++helicopterMove;
                 }
                 movTime += getMovingTime( ((Nodo)Schedule.get(i).get(helicopterMove-1)), ((Nodo) Schedule.get(i).get(helicopterMove)) );
@@ -139,6 +155,7 @@ public class Estado {
                 else if ( checkList[0] ) travelToGroup1 += movTime;
                 else if ( checkList[1] ) travelToGroup2 += movTime;
                 ++helicopterMove;
+
             }
         }
 
@@ -157,32 +174,38 @@ public class Estado {
     }
 
     @Override
-    public boolean equals(Object o) {
+    public boolean equals(Object obj) {
         if ( !(obj instanceof Estado ) ) 
             return false;
+        Estado o = (Estado) obj;
         if ( this.heuristic != o.getHeuristicValue() )
             return false;
         for ( int i = 0; i < this.Schedule.size(); ++i ) {
-            int pos = 0;
-            boolean equals = false;
-            while ( pos < o.Schedule.size() && !false ) {
-                if ( this.Schedule.get(i) == o.Schedule.get(pos) ) false = true;
-                else ++pos;
+            boolean [] aux = new boolean[this.Schedule.size()];
+            for ( int j = 0; j < this.Schedule.size(); ++j ) {
+                int k = 0;
+                while ( k < this.Schedule.get(i).size() && !aux[i] ) {
+                    if ( !this.Schedule.get(i).get(j).equals(o.Schedule.get(i).get(k)) )
+                        aux[i] = true;
+                    ++k;
+                }
             }
-            if ( pos != o.Schedule.size() ) return false;          
+            boolean _aux = false;
+            for ( int j = 0; j < this.Schedule.size(); ++j )
+                _aux = aux[j];
+            if (_aux) return false;
         }
         return true;
     }  
     
     public void swapOperation ( int h1, int h2, int p1, int p2 ) {
         Nodo aux = Schedule.get(h1).get(p1);
-        Schedule.get(h1).set(p1, Schedule.get(h2).get(p2));
-        Schedule.get(h2).set(p2, aux);
+        this.Schedule.get(h1).set(p1, Schedule.get(h2).get(p2));
+        this.Schedule.get(h2).set(p2, aux);
     }
 
     public void deleteOperation ( int h, int p ) {
-        if ( Schedule.get(h).get(p).getType() == Nodo.CENTRO && p != 0 && p != Schedule.get(h).size() )
-            Schedule.get(h).remove(p);
+        this.Schedule.get(h).remove(p);
     }
 
     public double getHeuristicValue () {
@@ -196,4 +219,32 @@ public class Estado {
     public int getSizeY () {
         return Schedule.get(0).size();
     }
+
+    public boolean isValid () {
+        for ( int i = 0; i < Schedule.size(); ++i ) {
+            for ( int j = 0; j < Schedule.get(i).size(); ++j ) {
+                if ( j == 0 && Schedule.get(i).get(j).getType() != Nodo.CENTRO ) 
+                    return false;
+                else if ( j == (Schedule.get(i).size() - 1) && Schedule.get(i).get(j).getType() != Nodo.CENTRO ) 
+                    return false;
+                else if ( j > 5 && Schedule.get(i).get(j).getType() == Nodo.GRUPO && Schedule.get(i).get(j-1).getType() == Nodo.GRUPO && Schedule.get(i).get(j-2).getType() == Nodo.GRUPO && Schedule.get(i).get(j-3).getType() == Nodo.GRUPO ) 
+                    return false;
+                else if ( j > 0 && Schedule.get(i).get(j).getType() == Nodo.CENTRO && Schedule.get(i).get(j-1).getType() == Nodo.CENTRO ) 
+                    return false;
+                else if ( j > 3 ) {
+                    int people = 0; 
+                    if ( Schedule.get(i).get(j).getType() == Nodo.GRUPO && Schedule.get(i).get(j-1).getType() == Nodo.GRUPO && Schedule.get(i).get(j-2).getType() == Nodo.GRUPO ) {
+                        people = people + ((Grupo)g.get(Schedule.get(i).get(j).getId())).getNPersonas();
+                        people = people + ((Grupo)g.get(Schedule.get(i).get(j-1).getId())).getNPersonas();
+                        people = people + ((Grupo)g.get(Schedule.get(i).get(j-2).getId())).getNPersonas();
+                    
+                        if ( people > 15 ) 
+                            return false;
+                    }
+                }
+            }
+        }
+        return true;
+    }
+
 }
