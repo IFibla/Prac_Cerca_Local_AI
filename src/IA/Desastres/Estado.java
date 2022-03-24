@@ -156,6 +156,24 @@ public class Estado {
         return result;
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if ( !(obj instanceof Estado ) ) 
+            return false;
+        if ( this.heuristic != o.getHeuristicValue() )
+            return false;
+        for ( int i = 0; i < this.Schedule.size(); ++i ) {
+            int pos = 0;
+            boolean equals = false;
+            while ( pos < o.Schedule.size() && !false ) {
+                if ( this.Schedule.get(i) == o.Schedule.get(pos) ) false = true;
+                else ++pos;
+            }
+            if ( pos != o.Schedule.size() ) return false;          
+        }
+        return true;
+    }  
+    
     public void swapOperation ( int h1, int h2, int p1, int p2 ) {
         Nodo aux = Schedule.get(h1).get(p1);
         Schedule.get(h1).set(p1, Schedule.get(h2).get(p2));
