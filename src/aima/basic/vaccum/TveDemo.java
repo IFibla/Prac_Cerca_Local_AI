@@ -15,7 +15,7 @@ public class TveDemo extends javax.swing.JFrame {
 
 	private javax.swing.JMenuBar menuBar;
 
-	private JPanel cleanerPanel;
+	private javax.swing.JPanel cleanerPanel;
 
 	private javax.swing.JMenuItem exitMenuItem;
 
