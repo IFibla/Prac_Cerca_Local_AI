@@ -5,7 +5,7 @@ import java.util.Random;
 
 public class Estado {
     
-    public static final int SPEED = 100; 
+    public static final double SPEED = 100 * 0.000277777778; 
     public static final double ALPHA = 1; 
     public static final double BETA = 1; 
     public static final double OMEGA = 1; 
@@ -254,6 +254,28 @@ public class Estado {
             }
         }
         return true;
+    }
+
+    public double getOperativeTime () { 
+        double result = 0;
+        for ( int i = 1; i < Schedule.size() - 1; ++i ) {
+            double currentTime = 0;
+            for ( int j = 1; j < Schedule.get(i).size(); ++j ) {
+                currentTime += getMovingTime(Schedule.get(i).get(j-1), Schedule.get(i).get(j)) * SPEED ;
+                if ( Schedule.get(i).get(j).getType() == Nodo.GRUPO ) {
+                    Grupo _g = (Grupo)g.get(Schedule.get(i).get(j).getId());
+                    if ( _g.getPrioridad() == 1 )
+                        currentTime += _g.getNPersonas() * 120;
+                    else
+                        currentTime += _g.getNPersonas() * 60;
+                }
+                else {
+                    currentTime += 600;
+                }
+            }
+            if ( result < currentTime ) result = currentTime;
+        }
+        return result;
     }
 
 }

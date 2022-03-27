@@ -31,12 +31,14 @@ public class Controller {
 
     private void setAccions(List actions, Estado e, long temps) 
     {
-        System.out.println(e);
+        //System.out.println(e);
+        //System.out.println("Temps total: " + e.getOperativeTime());
+        System.out.print(" " + e.getOperativeTime());
         String accions = new String();
         for (int i = 0; i < actions.size(); i++) {
             String action = (String) actions.get(i);
             String [] op = action.split(" ");
-            if ( op[0] == "Swap") {
+            if ( op[0].equals("Swap")) {
                 e.swapOperation(Integer.parseInt(op[1]), Integer.parseInt(op[2]),
                     Integer.parseInt(op[3]), Integer.parseInt(op[4]));
             }
@@ -46,24 +48,38 @@ public class Controller {
 
             accions += action+"\n";
         }
-        System.out.println(e);
+        //System.out.println(e);
+        //System.out.println("Temps total: " + e.getOperativeTime());
+        System.out.println(" " + e.getOperativeTime());
+
     }
+
+	private static void printActions(List actions, Estado e) {
+		for (int i = 0; i < actions.size(); i++) {
+			String action = (String) actions.get(i).toString();
+			//System.out.println(action);
+            //System.out.println("Temps total: " + ((Estado) actions.get(i)).getOperativeTime());
+            System.out.println(e.getOperativeTime() + " " + ((Estado) actions.get(i)).getOperativeTime());
+		}
+	}
 
     private void setInstrumentation(Properties properties, long temps) 
 	{
-        for ( int i = 0; i < 20; ++i ) System.out.print("-");
-        System.out.println();
-        for ( int i = 0; i < 20; ++i ) System.out.print("-");
-        System.out.println();
+        //for ( int i = 0; i < 20; ++i ) System.out.print("-");
+        //System.out.println();
+        //for ( int i = 0; i < 20; ++i ) System.out.print("-");
+        //System.out.println();
         String propietats = new String();
-        propietats += "Temps de cerca: "+temps+" ms\n";
+        //propietats += "Temps de cerca: "+temps+" ms\n";
+        propietats += temps;
         Iterator keys = properties.keySet().iterator();
         if (keys.hasNext()) {
             String key = (String) keys.next();
             String property = properties.getProperty(key);
-            propietats += "Nodes expandits: "+property+"\n";
+            //propietats += "Nodes expandits: "+property+"\n";
+            propietats += " " + property;
         }
-        System.out.println(propietats);
+        System.out.print(propietats);
 	}
 
     public void executeHillClimbing ( int repetitions, int seed ) {
@@ -144,7 +160,7 @@ public class Controller {
 
                 long temps = b.getTimeInMillis()-a.getTimeInMillis();
                 setInstrumentation(agent.getInstrumentation(), temps);
-                setAccions(agent.getActions(), e, temps);
+                printActions(agent.getActions(), e);
             }
             catch ( Exception error ) {
                 error.printStackTrace();

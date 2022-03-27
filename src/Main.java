@@ -3,8 +3,8 @@ import IA.Desastres.*;
 public class Main {    
 
     public static void main (String[] args) {
-        Controller c = new Controller(10, 1, 100, 3123);
-        c.executeHillClimbing(2, 86);
-        c.executeSimulatedAnnealing(2, 86, 200, 10, 5, 0.9);
+        Controller c = new Controller(10, 1, 100, 1234);
+        //c.executeHillClimbing(20, 1234);
+        c.executeSimulatedAnnealing(20, 1234, 200, 10, 5, 0.9);
     }
 }
