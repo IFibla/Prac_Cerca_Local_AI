@@ -199,13 +199,20 @@ public class Estado {
     }  
     
     public void swapOperation ( int h1, int h2, int p1, int p2 ) {
-        Nodo aux = Schedule.get(h1).get(p1);
-        this.Schedule.get(h1).set(p1, Schedule.get(h2).get(p2));
-        this.Schedule.get(h2).set(p2, aux);
+        if ( 0 <= h1 && 0 <= h2 && 0 <= p1 && 0 <= p2 &&
+             h1 < Schedule.size() && h2 < Schedule.size() &&
+             p1 < Schedule.get(h1).size() && p2 < Schedule.get(h2).size() )
+             {
+                Nodo aux = Schedule.get(h1).get(p1);
+                this.Schedule.get(h1).set(p1, Schedule.get(h2).get(p2));
+                this.Schedule.get(h2).set(p2, aux);
+             }
+        
     }
 
     public void deleteOperation ( int h, int p ) {
-        this.Schedule.get(h).remove(p);
+        if ( 0 <= h && 0 <= p && h < Schedule.size() && p < Schedule.get(h).size() && Schedule.get(h).get(p).getType() == Nodo.CENTRO )
+            this.Schedule.get(h).remove(p);
     }
 
     public double getHeuristicValue () {
@@ -231,16 +238,18 @@ public class Estado {
                     return false;
                 else if ( j > 0 && Schedule.get(i).get(j).getType() == Nodo.CENTRO && Schedule.get(i).get(j-1).getType() == Nodo.CENTRO ) 
                     return false;
-                else if ( j > 3 ) {
+                else if ( j > 1 ) {
                     int people = 0; 
-                    if ( Schedule.get(i).get(j).getType() == Nodo.GRUPO && Schedule.get(i).get(j-1).getType() == Nodo.GRUPO && Schedule.get(i).get(j-2).getType() == Nodo.GRUPO ) {
+                    if ( Schedule.get(i).get(j).getType() == Nodo.GRUPO ) {
                         people = people + ((Grupo)g.get(Schedule.get(i).get(j).getId())).getNPersonas();
-                        people = people + ((Grupo)g.get(Schedule.get(i).get(j-1).getId())).getNPersonas();
-                        people = people + ((Grupo)g.get(Schedule.get(i).get(j-2).getId())).getNPersonas();
-                    
-                        if ( people > 15 ) 
-                            return false;
+                        if ( Schedule.get(i).get(j-1).getType() == Nodo.GRUPO ) {
+                            people = people + ((Grupo)g.get(Schedule.get(i).get(j-1).getId())).getNPersonas();
+                            if ( Schedule.get(i).get(j-2).getType() == Nodo.GRUPO )
+                                people = people + ((Grupo)g.get(Schedule.get(i).get(j-2).getId())).getNPersonas();
+                        }
                     }
+                    if ( people > 15 ) 
+                        return false;
                 }
             }
         }

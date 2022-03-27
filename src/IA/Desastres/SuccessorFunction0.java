@@ -4,10 +4,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 import aima.search.framework.SuccessorFunction;
+import aima.search.framework.Successor;
 
 public class SuccessorFunction0 implements SuccessorFunction {
     
-    public static int DEBUG;
+    public static int DEBUG = 0;
 	
     public SuccessorFunction0 ( ) {
 
@@ -21,15 +22,15 @@ public class SuccessorFunction0 implements SuccessorFunction {
        
         Estado actual_state = (Estado) state;
 
-        ArrayList <Estado> successors = new ArrayList<Estado>();
+        ArrayList <Successor> successors = new ArrayList<Successor>();
 
         for ( int i = 0; i < actual_state.getSizeX(); ++i ) {
             for ( int j = 0; j < actual_state.getSizeY(); ++j ) {
 
                 Estado new_estado_delete = new Estado ( actual_state, i, j );
                 if ( !new_estado_delete.equals(actual_state) && new_estado_delete.isValid() ) {
-                    if ( this.DEBUG == 1 ) System.out.println ( "New State Created by delete (" + i + "," + j + ")");
-                    successors.add(new_estado_delete);
+                    String message = "Delete " + i + " " + j;
+                    successors.add(new Successor(message, new_estado_delete));
                 }
 
                 for ( int k = 0; k < actual_state.getSizeX(); ++k ) {
@@ -37,8 +38,8 @@ public class SuccessorFunction0 implements SuccessorFunction {
                         if ( i != k && j != l ) {
                             Estado new_estado_swap = new Estado ( actual_state, i, j, k, l );
                             if ( !new_estado_swap.equals(actual_state) && new_estado_swap.isValid() ) {
-                                if ( this.DEBUG == 1 ) System.out.println ( "New State Created by swap (" + i + "," + j + ";" + k + "," + l + ")");
-                                successors.add(new_estado_swap);
+                                String message = "Swap " + i + " " + j + " " + k + " " + l;
+                                successors.add(new Successor(message, new_estado_swap));
                             }
                         }
                     }
