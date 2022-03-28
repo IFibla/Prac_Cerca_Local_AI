@@ -133,7 +133,7 @@ public class Estado {
         return Math.sqrt( Math.pow((a.getCoordX() - b.getCoordX()), 2) + Math.pow((a.getCoordY() - b.getCoordY()), 2));
     }
 
-    private void calculateHeuristicCost1 ( ) {
+    public void calculateHeuristicCost1 ( ) {
         double travelToGroup1 = 0.0;
         double travelToGroup2 = 0.0;
         double travelToGroup12 = 0.0;
@@ -273,7 +273,7 @@ public class Estado {
                     currentTime += 600;
                 }
             }
-            if ( result < currentTime ) result = currentTime;
+            result += currentTime;
         }
         return result;
     }

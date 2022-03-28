@@ -15,6 +15,10 @@ import aima.search.framework.Problem;
 import aima.search.framework.Search;
 import aima.search.framework.SearchUtils;
 
+
+import java.util.Calendar;
+import java.util.Date;
+
 /**
  * @author Ravi Mohan
  *  
@@ -24,8 +28,10 @@ public class SimulatedAnnealingSearch extends NodeExpander implements Search {
     private Object goalState;
     private Node lastNode;
     private int steps;
-    private boolean trace = false;
+    private boolean trace = true;
     private Scheduler scheduler;
+
+    public static int my_counter = 0;
 
     public SimulatedAnnealingSearch() {
         this.steps = 10000;
@@ -70,7 +76,8 @@ public class SimulatedAnnealingSearch extends NodeExpander implements Search {
                 double prob = 1.0 / (1.0 + Math.exp(deltaE / temp));
 
                 if (trace && (deltaE < 0.0) && (al > prob)) {
-                    System.out.println("Pr Acep=" + prob + " Delta E=" + deltaE + " Temp= " + temp);
+                    //System.out.println("Pr Acep=" + prob + " Delta E=" + deltaE + " Temp= " + temp);
+                    System.out.println(++SimulatedAnnealingSearch.my_counter);
                 }
 
                 if ((deltaE > 0.0) || (al > prob)) {

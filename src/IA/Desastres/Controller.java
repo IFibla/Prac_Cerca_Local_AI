@@ -31,9 +31,9 @@ public class Controller {
 
     private void setAccions(List actions, Estado e, long temps) 
     {
-        //System.out.println(e);
-        //System.out.println("Temps total: " + e.getOperativeTime());
-        System.out.print(" " + e.getOperativeTime());
+        System.out.println(e);
+        System.out.println("Temps total: " + e.getOperativeTime());
+        System.out.println("Valor del heuristic: " + e.getHeuristicValue());
         String accions = new String();
         for (int i = 0; i < actions.size(); i++) {
             String action = (String) actions.get(i);
@@ -41,16 +41,20 @@ public class Controller {
             if ( op[0].equals("Swap")) {
                 e.swapOperation(Integer.parseInt(op[1]), Integer.parseInt(op[2]),
                     Integer.parseInt(op[3]), Integer.parseInt(op[4]));
+                System.out.println("Swap between (" + op[1] + ", " + op[2] + ") and (" + op[3] + ", " + op[4] + ")");
             }
             else {
                 e.deleteOperation(Integer.parseInt(op[1]), Integer.parseInt(op[2]));
+                System.out.println("Delete (" + op[1] + ", " + op[2] + ")");
             }
 
             accions += action+"\n";
         }
-        //System.out.println(e);
-        //System.out.println("Temps total: " + e.getOperativeTime());
-        System.out.println(" " + e.getOperativeTime());
+        System.out.println("\n");
+        System.out.println(e);
+        e.calculateHeuristicCost1();
+        System.out.println("Temps total: " + e.getOperativeTime());
+        System.out.println("Valor del heuristic: " + e.getHeuristicValue());
 
     }
 
@@ -59,7 +63,7 @@ public class Controller {
 			String action = (String) actions.get(i).toString();
 			//System.out.println(action);
             //System.out.println("Temps total: " + ((Estado) actions.get(i)).getOperativeTime());
-            System.out.println(e.getOperativeTime() + " " + ((Estado) actions.get(i)).getOperativeTime());
+            //System.out.println(e.getOperativeTime() + " " + ((Estado) actions.get(i)).getOperativeTime());
 		}
 	}
 
@@ -70,14 +74,12 @@ public class Controller {
         //for ( int i = 0; i < 20; ++i ) System.out.print("-");
         //System.out.println();
         String propietats = new String();
-        //propietats += "Temps de cerca: "+temps+" ms\n";
-        propietats += temps;
+        propietats += "Temps de cerca: "+temps+" ms\n";
         Iterator keys = properties.keySet().iterator();
         if (keys.hasNext()) {
             String key = (String) keys.next();
             String property = properties.getProperty(key);
-            //propietats += "Nodes expandits: "+property+"\n";
-            propietats += " " + property;
+            propietats += "Nodes expandits: "+property+"\n";
         }
         System.out.print(propietats);
 	}
@@ -96,7 +98,7 @@ public class Controller {
         for ( int i = 0; i < repetitions; ++i ) {
             int randNum = myRandom.nextInt();
 
-            Estado e = new Estado ( this.nhelicopters, randNum );
+            Estado e = new Estado ( this.nhelicopters, 1234 );
 
             Problem p = new Problem ( e, sf, new GoalTest0(), h);
             Search s = new HillClimbingSearch();
