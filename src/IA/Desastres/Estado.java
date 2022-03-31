@@ -6,9 +6,10 @@ import java.util.Random;
 public class Estado {
     
     public static final double SPEED = 100 * 0.000277777778; 
-    public static final double ALPHA = 1; 
-    public static final double BETA = 1; 
-    public static final double OMEGA = 1; 
+    public static double ALPHA = 1; 
+    public static double BETA = 1; 
+    public static double OMEGA = 1;
+    public static int heuristico = 3; 
 
     public static Grupos g;
     public static Centros c;
@@ -29,7 +30,9 @@ public class Estado {
             this.Schedule.add(aux);
         }
         this.deleteOperation(h, p);
-        this.calculateHeuristicCost1();
+        if ( Estado.heuristico == 1 ) calculateHeuristicCost1();
+        else if ( Estado.heuristico == 2 ) calculateHeuristicCost2();
+        else if ( Estado.heuristico == 3 ) calculateHeuristicCost3();
     }
 
     public Estado ( Estado e, int h1, int p1, int h2, int p2 ) {
@@ -42,7 +45,9 @@ public class Estado {
             this.Schedule.add(aux);
         }
         this.swapOperation(h1, h2, p1, p2);
-        this.calculateHeuristicCost1();
+        if ( Estado.heuristico == 1 ) calculateHeuristicCost1();
+        else if ( Estado.heuristico == 2 ) calculateHeuristicCost2();
+        else if ( Estado.heuristico == 3 ) calculateHeuristicCost3();
     }
 
     public Estado ( int numHelicopteros ) {
@@ -66,7 +71,9 @@ public class Estado {
             addCentros();
         }
 
-        calculateHeuristicCost1();
+        if ( Estado.heuristico == 1 ) calculateHeuristicCost1();
+        else if ( Estado.heuristico == 2 ) calculateHeuristicCost2();
+        else if ( Estado.heuristico == 3 ) calculateHeuristicCost3();
     }
 
     public Estado ( int numHelicopters, int seed ) {
@@ -106,7 +113,9 @@ public class Estado {
         }
         addCentros();
 
-        calculateHeuristicCost1();
+        if ( Estado.heuristico == 1 ) calculateHeuristicCost1();
+        else if ( Estado.heuristico == 2 ) calculateHeuristicCost2();
+        else if ( Estado.heuristico == 3 ) calculateHeuristicCost3();
     }
 
     private void addCentros ( ) {
@@ -158,8 +167,51 @@ public class Estado {
 
             }
         }
-
         this.heuristic = ALPHA * travelToGroup1 + BETA * travelToGroup2 + OMEGA * travelToGroup12;
+    }
+
+    public void calculateHeuristicCost2 ( ) {
+        double result = 0;
+        for ( int i = 0; i < Schedule.size(); ++i ) {
+            double currentTime = 0;
+            for ( int j = 1; j < Schedule.get(i).size(); ++j ) {
+                currentTime += getMovingTime(Schedule.get(i).get(j-1), Schedule.get(i).get(j)) / SPEED ;
+                if ( Schedule.get(i).get(j).getType() == Nodo.GRUPO ) {
+                    Grupo _g = (Grupo)g.get(Schedule.get(i).get(j).getId());
+                    if ( _g.getPrioridad() == 1 )
+                        currentTime += _g.getNPersonas() * 120 * Estado.ALPHA;
+                    else
+                        currentTime += _g.getNPersonas() * 60 * Estado.BETA;
+                }
+                else {
+                    currentTime += 600 * Estado.OMEGA;
+                }
+            }
+            result += currentTime;
+        }
+        this.heuristic = result;
+    }
+
+    public void calculateHeuristicCost3 ( ) {
+        double result = 0;
+        for ( int i = 0; i < Schedule.size(); ++i ) {
+            double currentTime = 0;
+            for ( int j = 1; j < Schedule.get(i).size(); ++j ) {
+                currentTime += getMovingTime(Schedule.get(i).get(j-1), Schedule.get(i).get(j)) / SPEED ;
+                if ( Schedule.get(i).get(j).getType() == Nodo.GRUPO ) {
+                    Grupo _g = (Grupo)g.get(Schedule.get(i).get(j).getId());
+                    if ( _g.getPrioridad() == 1 )
+                        currentTime += _g.getNPersonas() * 120 * Math.max((1/currentTime * Estado.ALPHA), 1);
+                    else
+                        currentTime += _g.getNPersonas() * 60 * Math.max(((1-1/currentTime) * Estado.BETA), 1);;
+                }
+                else {
+                    currentTime += 600 * Estado.OMEGA;
+                }
+            }
+            result += currentTime;
+        }
+        this.heuristic = result;
     }
 
     @Override
@@ -234,7 +286,7 @@ public class Estado {
                     return false;
                 else if ( j == (Schedule.get(i).size() - 1) && Schedule.get(i).get(j).getType() != Nodo.CENTRO ) 
                     return false;
-                else if ( j > 5 && Schedule.get(i).get(j).getType() == Nodo.GRUPO && Schedule.get(i).get(j-1).getType() == Nodo.GRUPO && Schedule.get(i).get(j-2).getType() == Nodo.GRUPO && Schedule.get(i).get(j-3).getType() == Nodo.GRUPO ) 
+                else if ( j > 1 && Schedule.get(i).get(j).getType() == Nodo.GRUPO && Schedule.get(i).get(j-1).getType() == Nodo.GRUPO && Schedule.get(i).get(j-2).getType() == Nodo.GRUPO && Schedule.get(i).get(j-3).getType() == Nodo.GRUPO ) 
                     return false;
                 else if ( j > 0 && Schedule.get(i).get(j).getType() == Nodo.CENTRO && Schedule.get(i).get(j-1).getType() == Nodo.CENTRO ) 
                     return false;
@@ -258,10 +310,10 @@ public class Estado {
 
     public double getOperativeTime () { 
         double result = 0;
-        for ( int i = 1; i < Schedule.size() - 1; ++i ) {
+        for ( int i = 0; i < Schedule.size(); ++i ) {
             double currentTime = 0;
             for ( int j = 1; j < Schedule.get(i).size(); ++j ) {
-                currentTime += getMovingTime(Schedule.get(i).get(j-1), Schedule.get(i).get(j)) * SPEED ;
+                currentTime += getMovingTime(Schedule.get(i).get(j-1), Schedule.get(i).get(j)) / SPEED ;
                 if ( Schedule.get(i).get(j).getType() == Nodo.GRUPO ) {
                     Grupo _g = (Grupo)g.get(Schedule.get(i).get(j).getId());
                     if ( _g.getPrioridad() == 1 )
@@ -275,7 +327,32 @@ public class Estado {
             }
             result += currentTime;
         }
-        return result;
+        return result/60;
+    }
+
+    public double getPriorityGroupsTime () {
+        double result = 0;
+        for ( int i = 0; i < Schedule.size(); ++i ) {
+            double currentTime = 0;
+            double auxTime = 0;
+            for ( int j = 1; j < Schedule.get(i).size(); ++j ) {
+                currentTime += getMovingTime(Schedule.get(i).get(j-1), Schedule.get(i).get(j)) / SPEED ;
+                if ( Schedule.get(i).get(j).getType() == Nodo.GRUPO ) {
+                    Grupo _g = (Grupo)g.get(Schedule.get(i).get(j).getId());
+                    if ( _g.getPrioridad() == 1 ) {
+                        currentTime += _g.getNPersonas() * 120;
+                        auxTime = currentTime;
+                    }
+                    else
+                        currentTime += _g.getNPersonas() * 60;
+                }
+                else {
+                    currentTime += 600;
+                }
+            }
+            if ( auxTime > result ) result = auxTime;
+        }
+        return result/60;
     }
 
 }

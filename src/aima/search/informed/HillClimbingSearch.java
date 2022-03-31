@@ -8,6 +8,8 @@ import aima.search.framework.Problem;
 import aima.search.framework.Search;
 import aima.search.framework.SearchUtils;
 
+import IA.Desastres.Estado;
+
 /**
  * @author Ravi Mohan
  *  
@@ -19,6 +21,7 @@ public class HillClimbingSearch extends NodeExpander implements Search {
 		clearInstrumentation();
 		Node current = new Node(p.getInitialState());
 		Node neighbor = null;
+		int i = 0;
 		while (true) {
 			List children = expandNode(current, p);
 			neighbor = getHighestValuedNodeFrom(children, p);

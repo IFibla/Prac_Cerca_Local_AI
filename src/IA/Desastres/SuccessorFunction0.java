@@ -29,7 +29,7 @@ public class SuccessorFunction0 implements SuccessorFunction {
 
                 Estado new_estado_delete = new Estado ( actual_state, i, j );
                 if ( !new_estado_delete.equals(actual_state) && new_estado_delete.isValid() ) {
-                    String message = "Delete " + i + " " + j;
+                    String message = new_estado_delete.getHeuristicValue() + "\t" + new_estado_delete.getOperativeTime() + "\t" + new_estado_delete.getPriorityGroupsTime();
                     successors.add(new Successor(message, new_estado_delete));
                 }
 
@@ -37,8 +37,9 @@ public class SuccessorFunction0 implements SuccessorFunction {
                     for ( int l = 0; l < actual_state.getSizeY(); ++l ) {
                         if ( i != k && j != l ) {
                             Estado new_estado_swap = new Estado ( actual_state, i, j, k, l );
-                            if ( !new_estado_swap.equals(actual_state) && new_estado_swap.isValid() ) {
-                                String message = "Swap " + i + " " + j + " " + k + " " + l;
+                            if ( new_estado_swap.isValid() && !new_estado_swap.equals(actual_state) ) {
+                                // "\t Swap " + i + " " + j + " " + k + " " + l;
+                                String message = new_estado_swap.getHeuristicValue() + "\t" + new_estado_swap.getOperativeTime() + "\t" + new_estado_swap.getPriorityGroupsTime();
                                 successors.add(new Successor(message, new_estado_swap));
                             }
                         }

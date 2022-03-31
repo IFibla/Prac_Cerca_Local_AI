@@ -29,33 +29,11 @@ public class Controller {
         this.nhelicopters = nhelicopters;
     }
 
-    private void setAccions(List actions, Estado e, long temps) 
+    private void setAccions(List actions) 
     {
-        System.out.println(e);
-        System.out.println("Temps total: " + e.getOperativeTime());
-        System.out.println("Valor del heuristic: " + e.getHeuristicValue());
-        String accions = new String();
-        for (int i = 0; i < actions.size(); i++) {
-            String action = (String) actions.get(i);
-            String [] op = action.split(" ");
-            if ( op[0].equals("Swap")) {
-                e.swapOperation(Integer.parseInt(op[1]), Integer.parseInt(op[2]),
-                    Integer.parseInt(op[3]), Integer.parseInt(op[4]));
-                System.out.println("Swap between (" + op[1] + ", " + op[2] + ") and (" + op[3] + ", " + op[4] + ")");
-            }
-            else {
-                e.deleteOperation(Integer.parseInt(op[1]), Integer.parseInt(op[2]));
-                System.out.println("Delete (" + op[1] + ", " + op[2] + ")");
-            }
-
-            accions += action+"\n";
+        for (int i = actions.size()-1; i < actions.size(); i++) {
+            System.out.println((String) actions.get(i));
         }
-        System.out.println("\n");
-        System.out.println(e);
-        e.calculateHeuristicCost1();
-        System.out.println("Temps total: " + e.getOperativeTime());
-        System.out.println("Valor del heuristic: " + e.getHeuristicValue());
-
     }
 
 	private static void printActions(List actions, Estado e) {
@@ -69,10 +47,6 @@ public class Controller {
 
     private void setInstrumentation(Properties properties, long temps) 
 	{
-        //for ( int i = 0; i < 20; ++i ) System.out.print("-");
-        //System.out.println();
-        //for ( int i = 0; i < 20; ++i ) System.out.print("-");
-        //System.out.println();
         String propietats = new String();
         propietats += "Temps de cerca: "+temps+" ms\n";
         Iterator keys = properties.keySet().iterator();
@@ -85,58 +59,54 @@ public class Controller {
 	}
 
     public void executeHillClimbing ( int repetitions, int seed ) {
-        for ( int i = 0; i < 20; ++i ) System.out.print("-");
-        System.out.println();
-        for ( int i = 0; i < 20; ++i ) System.out.print("-");
-        System.out.println();
-        System.out.println("Execution with Hill Climbing Search");
-        for ( int i = 0; i < 20; ++i ) System.out.print("-");
-        System.out.println();
-        for ( int i = 0; i < 20; ++i ) System.out.print("-");
-        System.out.println();
         Random myRandom = new Random((long)seed);
         for ( int i = 0; i < repetitions; ++i ) {
             int randNum = myRandom.nextInt();
+            for ( int heu = 1; heu <= 3; ++heu ) {
+                for ( int ALPHA = 1; ALPHA <= 3 ; ++ALPHA ) {
+                    for ( int BETA = 1; BETA <= 3; ++BETA ) {
+                        for ( int OMEGA = 1; OMEGA <= 3; ++OMEGA ) {
+                            Estado.ALPHA = ALPHA;
+                            Estado.BETA = BETA;
+                            Estado.OMEGA = OMEGA;
+                            Estado.heuristico = heu;
+                            System.out.println("(" + ALPHA + "," + BETA + "," + OMEGA + "," + heu + ")");
 
-            Estado e = new Estado ( this.nhelicopters, 1234 );
+                            Estado e = new Estado ( this.nhelicopters, randNum);
+                            Problem p = new Problem ( e, sf, new GoalTest0(), h);
+                            Search s = new HillClimbingSearch();
+                            SearchAgent agent;
+                            
+                            try {
+                                Date d1,d2;
+                                Calendar a,b;
 
-            Problem p = new Problem ( e, sf, new GoalTest0(), h);
-            Search s = new HillClimbingSearch();
-            SearchAgent agent;
-            
-            try {
-                Date d1,d2;
-                Calendar a,b;
+                                d1 = new Date();
+                                agent = new SearchAgent ( p, s );
+                                d2 = new Date();
 
-                d1 = new Date();
-                agent = new SearchAgent ( p, s );
-                d2 = new Date();
+                                a= Calendar.getInstance();
+                                b= Calendar.getInstance();
+                                a.setTime(d1);
+                                b.setTime(d2);
 
-                a= Calendar.getInstance();
-                b= Calendar.getInstance();
-                a.setTime(d1);
-                b.setTime(d2);
-
-                long temps = b.getTimeInMillis()-a.getTimeInMillis();
-                setInstrumentation(agent.getInstrumentation(), temps);
-                setAccions(agent.getActions(), e, temps);
-            }
-            catch ( Exception error ) {
-                error.printStackTrace();
-            }
+                                long temps = b.getTimeInMillis()-a.getTimeInMillis();
+                                System.out.println("Seed: " + randNum);
+                                setInstrumentation(agent.getInstrumentation(), temps);
+                                setAccions(agent.getActions());
+                                System.out.println("\n");
+                            }
+                            catch ( Exception error ) {
+                                error.printStackTrace();
+                            }
+                        }
+                    }
+                }
+            } 
         }
     }
 
     public void executeSimulatedAnnealing ( int repetitions, int seed, int it, int pit, int k, double lbd ) {
-        for ( int i = 0; i < 20; ++i ) System.out.print("-");
-        System.out.println();
-        for ( int i = 0; i < 20; ++i ) System.out.print("-");
-        System.out.println();
-        System.out.println("Execution with Simulated Annealing Search");
-        for ( int i = 0; i < 20; ++i ) System.out.print("-");
-        System.out.println();
-        for ( int i = 0; i < 20; ++i ) System.out.print("-");
-        System.out.println();
         Random myRandom = new Random((long)seed);
         for ( int i = 0; i < repetitions; ++i ) {
             int randNum = myRandom.nextInt();
