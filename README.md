@@ -34,8 +34,6 @@ Centros de rescate, helicopteros, personas,
 
 ## Links
 
-[Trello Board](https://trello.com/b/8Eem6own/cerca-local)
-
 [Documentació Desastres](/doc/Desastres/index.html)
 
 [Enunciat](/misc/Enunciat.pdf)
